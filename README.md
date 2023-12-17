@@ -6,4 +6,5 @@ Trained on MNIST handwriting dataset. The starting menu of the program allows yo
 After you have trained your model you can use the RUN function with the saved parameters on a selected image from the testing dataset.
 
 # Work in Progress
-Working on accepting handwritten images.
+Working on accepting handwritten images that you can input yourself
+
