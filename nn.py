@@ -8,7 +8,7 @@ import cv2
 import random
 import math
 from numpy.core.fromnumeric import mean
-import json
+
 from numpy import savetxt
 from numpy import asarray
 import csv
