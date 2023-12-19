@@ -191,19 +191,20 @@ def runmodel(w1, b1, w2, b2,w3, b3, softmax):
             dense3.weights = w3
             dense3.biases = b3
             X2 = image_data
-            file3 = 'samples/t10k-images.idx3-ubyte'
-            file4 = 'samples/t10k-labels.idx1-ubyte'
-            X2 = idx2numpy.convert_from_file(file3)
+
             np.set_printoptions(linewidth=200)
+            option = input("Is the background of your image white or black? Type w / b: ")
+            if option == "w":
+                X2 = 255 - X2
+
             #pos = int(input("Select from where in the testing dataset you want to pick your number (max 10,000): "))
             print("Selected number:")
              #inverts colours
 
-            X2 = X2.reshape(X2.shape[0], -1)
-            X2 = X2[1]
 
-            X2 = image_data
-            X2 = 255 - X2
+
+
+
 
             print(X2)
             X2 = (X2.reshape(1, -1))
@@ -223,8 +224,9 @@ def runmodel(w1, b1, w2, b2,w3, b3, softmax):
             max1x = max(output1[0])
             #predicts using softmax prediction output
             print("Prediction: ")
-            print(output1)
-            print(sum(output1[0]))
+            #Debugging options: Shows how confident teh model was
+            #print(output1)
+            #print(sum(output1[0]))
             print(next(i for i, x in
                        enumerate(output1[0]) if x == max1x))
 
