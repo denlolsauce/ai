@@ -1,3 +1,7 @@
+##BY RIAN O DONNELL####
+##HANDWRITTEN DIGIT RECOGNITION 2023##
+
+
 import numpy as np
 import idx2numpy
 import cv2
@@ -176,7 +180,7 @@ class optimizer:
       layer.biases += -self.current_learningrate * bias_momentums_corrected / (np.sqrt(self.dcache_updates) + self.epsilon)
   def iterations_update(self):
     self.iterations += 1
-def runmodel(w1, b1, w2, b2, softmax):
+def runmodel(w1, b1, w2, b2,w3, b3, softmax):
             softmax = softmax
             image_data = cv2.imread('samples/image.png', cv2.IMREAD_GRAYSCALE)
             image_data = cv2.resize(image_data, (28,28))
@@ -184,19 +188,27 @@ def runmodel(w1, b1, w2, b2, softmax):
             dense2.weights = w2
             dense1.biases = b1
             dense2.biases = b2
+            dense3.weights = w3
+            dense3.biases = b3
             X2 = image_data
             file3 = 'samples/t10k-images.idx3-ubyte'
             file4 = 'samples/t10k-labels.idx1-ubyte'
             X2 = idx2numpy.convert_from_file(file3)
             np.set_printoptions(linewidth=200)
-            pos = int(input("Select from where in the testing dataset you want to pick your number (max 10,000): "))
+            #pos = int(input("Select from where in the testing dataset you want to pick your number (max 10,000): "))
             print("Selected number:")
              #inverts colours
-            print(X2[pos])
-            X2 = X2.reshape(X2.shape[0], -1)
-            X2 = X2[pos]
 
-            #X2 = (X2.reshape(1, -1).astype(np.float32) - 127.5) / 127.5
+            X2 = X2.reshape(X2.shape[0], -1)
+            X2 = X2[1]
+
+            X2 = image_data
+            X2 = 255 - X2
+
+            print(X2)
+            X2 = (X2.reshape(1, -1))
+
+            print("----")
 
 
             dense1.forward(X2)
@@ -204,12 +216,15 @@ def runmodel(w1, b1, w2, b2, softmax):
             activation.forward(dense1.output)  # ReLU
 
             dense2.forward(activation.output)
-
-            softmax.forward(dense2.output)
+            activation.forward(dense2.output)
+            dense3.forward(activation.output)
+            softmax.forward(dense3.output)
             output1 = softmax.output
             max1x = max(output1[0])
             #predicts using softmax prediction output
             print("Prediction: ")
+            print(output1)
+            print(sum(output1[0]))
             print(next(i for i, x in
                        enumerate(output1[0]) if x == max1x))
 
@@ -225,16 +240,17 @@ keys = np.array(range(X.shape[0]))
 np.random.shuffle(keys)
 X = X.reshape(X.shape[0], -1) #
 print("============================================================")
-option = input("Commands: T - Train | R - Run model | H - Help")
+option = input("Commands: T - Train | R - Run model | H - Help: ")
 dense1 = Layer_dense(784, 784)
+dense2 = Layer_dense(784,784)
 activation = reLU()
-dense2 = Layer_dense(784, 10)
+dense3 = Layer_dense(784, 10)
 loss_activation = Activation_softmax_crossentropy()
 softmax1 = softmax()
-optimizer = optimizer(learning_rate=0.005, decay=1e-3)
+optimizer = optimizer(learning_rate=0.001, decay=1e-3)
 X = X[keys]
 y = y[keys]
-if option == "T":
+if option.upper() == "T":
 
     batch_size = int(input("Batch size for training / max 59999: "))
     X = X[:batch_size]
@@ -260,22 +276,25 @@ if option == "T":
       activation.forward(dense1.output)  # ReLU
 
       dense2.forward(activation.output)
-
-      loss = loss_activation.forward(dense2.output, y)  # y is the predicted valeus
+      activation.forward(dense2.output)
+      dense3.forward(activation.output)
+      loss = loss_activation.forward(dense3.output, y)  # y is the predicted valeus
       predictions = np.argmax(loss_activation.output, axis=1)
       if len(y.shape) == 2:  # if its 2 dimensions
         y = np.argmax(y, axis=1)
       accuracy = np.mean(predictions == y)
 
-      loss_activation.backward(
-          loss_activation.output, y)  # backward pass of loss activation and predicted values
-      dense2.backward(loss_activation.dinputs)  # derivatives from loss activation
+      loss_activation.backward(loss_activation.output, y)  # backward pass of loss activation and predicted values
+      dense3.backward(loss_activation.dinputs)
+      activation.backward(dense3.dinputs)
+      dense2.backward(activation.dinputs)  # derivatives from loss activation
       activation.backward(dense2.dinputs)
       dense1.backward(activation.dinputs)
 
       decay = optimizer.learning_rate_decay(i)
       optimizer.update_params(dense1)
       optimizer.update_params(dense2)
+      optimizer.update_params(dense3)
       optimizer.iterations_update()
       learningrate = decay
       if i % 100 == 0:
@@ -283,7 +302,7 @@ if option == "T":
         print("accuracy: ", accuracy)
         print("loss: ", loss)
         print("learning_rate: ", decay)
-      if accuracy > 0.97:
+      if accuracy > 0.975:
           print("Accuracy: ", accuracy)
           print("The model has reached 100 % accuracy")
           choice = input("Do you want to start the testing? y/n")
@@ -292,15 +311,18 @@ if option == "T":
             savetxt('biases1.csv',dense1.biases, delimiter=',' )
             savetxt('weights2.csv',dense2.weights, delimiter=',' )
             savetxt('biases2.csv',dense2.biases, delimiter=',' )
+            savetxt('weights3.csv',dense3.weights, delimiter=',' )
+            savetxt('biases3.csv',dense3.biases, delimiter=',' )
             w1 = dense1.weights
             b1 = dense1.biases
             w2 = dense2.weights
             b2 = dense2.biases
-
-            runmodel(w1, b1, w2, b2, softmax1)
+            w3 = dense3.weights
+            b3 = dense3.biases
+            runmodel(w1, b1, w2, b2, w3, b3,  softmax1)
             break
 #put your own handwritten number
-elif option == "R":
+elif option.upper() == "R":
     with open('weights1.csv', 'r') as f:
         reader = csv.reader(f)
         data = list(reader)
@@ -317,8 +339,15 @@ elif option == "R":
             reader = csv.reader(f)
             data = list(reader)
             b2 = np.array(data, dtype=float)
-
-    runmodel(w1, b1, w2, b2, softmax1)
+    with open('biases3.csv', 'r') as f:
+            reader = csv.reader(f)
+            data = list(reader)
+            b3 = np.array(data, dtype=float)
+    with open('weights3.csv', 'r') as f:
+            reader = csv.reader(f)
+            data = list(reader)
+            w3 = np.array(data, dtype=float)
+    runmodel(w1, b1, w2, b2,w3, b3, softmax1)
 
 else:
     print("=========================== HELP ===========================")
