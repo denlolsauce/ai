@@ -3,8 +3,16 @@ A work in progress user friendly AI model for predicting images
 
 # Features
 Trained on MNIST handwriting dataset. The starting menu of the program allows you to choose a batch size to train your model on. 
-After you have trained your model you can use the RUN function with the saved parameters on a selected image from the testing dataset.
+After you have trained your model you can use the RUN function using a custom image.
+
+# How to use custom images
+If you decide to draw an image or use a handwritten image off google you **must** centre it and add an adequate amount of space around the number. 
+![alt text](https://github.com/denlolsauce/ai/blob/samples/example.png?raw=true)
+
+After that save it as **image.png**
+If the model guesses incorrectly its usually due to preprocessing errors
 
 # Work in Progress
-Working on accepting handwritten images that you can input yourself
+Working on cropping images automatically and adding multiple numbers (e.g. reading 1890 by seperating into seperate numbers)
+
 
