@@ -7,7 +7,7 @@ After you have trained your model you can use the RUN function using a custom im
 
 # How to use custom images
 If you decide to draw an image or use a handwritten image off google you **must** centre it and add an adequate amount of space around the number. 
-!number(https://github.com/denlolsauce/ai/blob/samples/example.png?raw=true)
+![number](https://github.com/denlolsauce/ai/blob/samples/example.png?raw=true)
 
 After that save it as **image.png**
 If the model guesses incorrectly its usually due to preprocessing errors
