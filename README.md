@@ -1,5 +1,5 @@
 # Image Reading AI
-A work in progress user friendly AI model for predicting images
+A work in progress user friendly AI model for predicting images. Using opencv for image preproccessing and numpy
 
 # Features
 Trained on MNIST handwriting dataset. The starting menu of the program allows you to choose a batch size to train your model on. 
