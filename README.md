@@ -12,6 +12,11 @@ If you decide to draw an image or use a handwritten image off google you **must*
 After that save it as **image.png**
 If the model guesses incorrectly its usually due to preprocessing errors
 
+# Module needed
+
+```pip install opencv-python``` ```pip install numpy``` ```pip install idx2numpy```  
+
+
 # Work in Progress
 Working on cropping images automatically and adding multiple numbers (e.g. reading 1890 by seperating into seperate numbers)
 
